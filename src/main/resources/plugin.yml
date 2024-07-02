@@ -1,0 +1,16 @@
+name: RecordingIndicator
+version: '1.0.0'
+main: dev.acronical.recordingindicator.RecordingIndicator
+api-version: '1.21'
+description: A simple plugin that shows a live indicator in the tab list.
+author: Acronical
+website: https://acronical.is-a.dev
+commands:
+  live:
+    description: "Toggles the live indicator."
+    usage: "/live <on|off>"
+    aliases: ["togglelive", "livetoggle"]
+  recording:
+    description: "Toggles the recording indicator."
+    usage: "/recording <on|off>"
+    aliases: ["togglerecording", "rectoggle", "togglerec"]
