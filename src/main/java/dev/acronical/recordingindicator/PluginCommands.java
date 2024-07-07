@@ -22,14 +22,14 @@ public class PluginCommands implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        if (command.getName().equalsIgnoreCase("live") || command.getName().equalsIgnoreCase("recording")) {
+        if (command.getName().equalsIgnoreCase("recording")) {
             if (strings.length == 0) {
                 player.sendMessage("Usage: /recording <on|off>");
                 return true;
             }
 
             if (strings[0].equalsIgnoreCase("on")) {
-                player.setPlayerListName("§4●§r " + player.getName());
+                player.setPlayerListName("§c●§r " + player.getName());
                 player.sendMessage("Toggled the recording indicator on.");
                 return true;
             }
@@ -41,6 +41,28 @@ public class PluginCommands implements CommandExecutor, TabCompleter {
             }
 
             player.sendMessage("Usage: /recording <on|off>");
+            return true;
+        }
+
+        if (command.getName().equalsIgnoreCase("live")) {
+            if (strings.length == 0) {
+                player.sendMessage("Usage: /live <on|off>");
+                return true;
+            }
+
+            if (strings[0].equalsIgnoreCase("on")) {
+                player.setPlayerListName("§d●§r " + player.getName());
+                player.sendMessage("Toggled the streaming indicator on.");
+                return true;
+            }
+
+            if (strings[0].equalsIgnoreCase("off")) {
+                player.setPlayerListName(player.getName());
+                player.sendMessage("Toggled the streaming indicator off.");
+                return true;
+            }
+
+            player.sendMessage("Usage: /live <on|off>");
             return true;
         }
 

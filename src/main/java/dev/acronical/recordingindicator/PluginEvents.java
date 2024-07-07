@@ -15,15 +15,21 @@ import java.util.UUID;
 public class PluginEvents implements Listener {
 
     File recordingFile = new File(RecordingIndicator.getPlugin(RecordingIndicator.class).getDataFolder(), "recording.yml");
-    FileConfiguration data = YamlConfiguration.loadConfiguration(recordingFile);
+    FileConfiguration recordingData = YamlConfiguration.loadConfiguration(recordingFile);
+
+    File streamingFile = new File(RecordingIndicator.getPlugin(RecordingIndicator.class).getDataFolder(), "streaming.yml");
+    FileConfiguration streamingData = YamlConfiguration.loadConfiguration(streamingFile);
 
     @EventHandler
     public void onPlayerLeave(PlayerQuitEvent e) {
         Player player = e.getPlayer();
-        if (player.getPlayerListName().startsWith("§4●§r ")) {
-            data.set(player.getUniqueId().toString(), true);
+        if (player.getPlayerListName().startsWith("§c●§r ")) {
+            recordingData.set(player.getUniqueId().toString(), true);
+        } else if (player.getPlayerListName().startsWith("§d●§r ")) {
+            streamingData.set(player.getUniqueId().toString(), true);
         } else {
-            data.set(player.getUniqueId().toString(), false);
+            recordingData.set(player.getUniqueId().toString(), false);
+            streamingData.set(player.getUniqueId().toString(), false);
         }
     }
 
@@ -31,13 +37,16 @@ public class PluginEvents implements Listener {
     public void onPlayerJoin(PlayerJoinEvent e) {
         Player player = e.getPlayer();
         UUID uuid = player.getUniqueId();
-        if (data.contains(uuid.toString())) {
-            if (data.getBoolean(uuid.toString())) {
-                player.setPlayerListName("§4●§r " + player.getName());
-            } else {
-                player.setPlayerListName(player.getName());
+        if (recordingData.contains(uuid.toString())) {
+            if (recordingData.getBoolean(uuid.toString())) {
+                player.setPlayerListName("§c●§r " + player.getName());
             }
+        } else if (streamingData.contains(uuid.toString())) {
+            if (streamingData.getBoolean(uuid.toString())) {
+                player.setPlayerListName("§d●§r " + player.getName());
+            }
+        } else {
+            player.setPlayerListName(player.getName());
         }
     }
-
 }
