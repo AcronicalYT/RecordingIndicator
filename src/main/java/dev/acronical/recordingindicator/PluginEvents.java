@@ -1,5 +1,6 @@
 package dev.acronical.recordingindicator;
 
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -9,7 +10,6 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.io.File;
-import java.util.Objects;
 import java.util.UUID;
 
 public class PluginEvents implements Listener {
@@ -50,10 +50,25 @@ public class PluginEvents implements Listener {
         }
     }
 
-    public static void onPluginMessageRecieved(String channel, String playerName, String indicator, Boolean enabled) {
-        if (!channel.equals("acronicalRecordingIndicator")) return;
+    public static void onModConnectPlugin(Player player, byte[] data) {
+        byte indicatorByte = data[0];
+        byte enabledByte = data[1];
+        String indicator;
+        boolean enabled;
 
-        Player player = Bukkit.getServer().getOnlinePlayers().getName().equals(playerName);
+        if (indicatorByte == 0) indicator = "live";
+        else if (indicatorByte == 1) indicator = "recording";
+        else {
+            player.sendMessage(ChatColor.RED + "An error occurred when automatically setting status, aborting...");
+            throw new Error("Data received with no indicator byte, please contact Acronical about this.");
+        }
+
+        if (enabledByte == 0) enabled = false;
+        else if (enabledByte == 1) enabled = true;
+        else {
+            player.sendMessage(ChatColor.RED + "An error occurred when automatically setting status, aborting...");
+            throw new Error("Data received with no enabled byte, please contact Acronical about this.");
+        }
 
         switch (indicator) {
             case "live":
@@ -64,10 +79,9 @@ public class PluginEvents implements Listener {
                 if (enabled) player.performCommand("recording on");
                 if (!enabled) player.performCommand("recording off");
                 break;
-            case default:
-                player.sendMessage("An error occurred when automatically setting status, aborting...");
+            default:
+                player.sendMessage(ChatColor.RED + "An error occurred when automatically setting status, aborting...");
                 throw new Error("Data received with no indicator string, please contact Acronical about this.");
-                break;
         }
     }
 }
