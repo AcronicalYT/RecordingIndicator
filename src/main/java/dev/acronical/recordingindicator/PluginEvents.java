@@ -60,6 +60,7 @@ public class PluginEvents implements Listener {
         else if (indicatorByte == 1) indicator = "recording";
         else {
             player.sendMessage(ChatColor.RED + "An error occurred when automatically setting status, aborting...");
+            player.sendPluginMessage(RecordingIndicator.getPlugin(RecordingIndicator.class), "acronicalrecordingindicator", "failure".getBytes());
             throw new Error("Data received with no indicator byte, please contact Acronical about this.");
         }
 
@@ -67,6 +68,7 @@ public class PluginEvents implements Listener {
         else if (enabledByte == 1) enabled = true;
         else {
             player.sendMessage(ChatColor.RED + "An error occurred when automatically setting status, aborting...");
+            player.sendPluginMessage(RecordingIndicator.getPlugin(RecordingIndicator.class), "acronicalrecordingindicator", "failure".getBytes());
             throw new Error("Data received with no enabled byte, please contact Acronical about this.");
         }
 
@@ -74,13 +76,16 @@ public class PluginEvents implements Listener {
             case "live":
                 if (enabled) player.performCommand("live on");
                 if (!enabled) player.performCommand("live off");
+                player.sendPluginMessage(RecordingIndicator.getPlugin(RecordingIndicator.class), "acronicalrecordingindicator", "success".getBytes());
                 break;
             case "recording":
                 if (enabled) player.performCommand("recording on");
                 if (!enabled) player.performCommand("recording off");
+                player.sendPluginMessage(RecordingIndicator.getPlugin(RecordingIndicator.class), "acronicalrecordingindicator", "success".getBytes());
                 break;
             default:
                 player.sendMessage(ChatColor.RED + "An error occurred when automatically setting status, aborting...");
+                player.sendPluginMessage(RecordingIndicator.getPlugin(RecordingIndicator.class), "acronicalrecordingindicator", "failure".getBytes());
                 throw new Error("Data received with no indicator string, please contact Acronical about this.");
         }
     }

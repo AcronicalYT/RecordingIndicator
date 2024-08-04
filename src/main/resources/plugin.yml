@@ -1,5 +1,5 @@
 name: RecordingIndicator
-version: '1.0.2'
+version: '1.0.3'
 main: dev.acronical.recordingindicator.RecordingIndicator
 api-version: '1.21'
 description: A simple plugin that shows a live indicator in the tab list.

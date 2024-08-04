@@ -1,22 +1,23 @@
 package dev.acronical.recordingindicator;
 
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.messaging.PluginMessageListener;
 
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Scanner;
 
-public final class RecordingIndicator extends JavaPlugin {
+public final class RecordingIndicator extends JavaPlugin implements PluginMessageListener {
 
     @Override
     public void onEnable() {
         versionCheck();
-        getServer().getMessenger().registerIncomingPluginChannel(this, "acronicalRecordingIndicator", (channel, player, data) -> {
-            if (!channel.equals("acronicalRecordingIndicator")) return;
-            PluginEvents.onModConnectPlugin(player, data);
-        });
+        getServer().getMessenger().registerOutgoingPluginChannel(this, "acronicalrecordingindicator");
+        getServer().getMessenger().registerIncomingPluginChannel(this, "acronicalrecordingindicator", this);
         getServer().getPluginManager().registerEvents(new PluginEvents(), this);
         getCommand("recording").setExecutor(new PluginCommands());
         getCommand("recording").setTabCompleter(new PluginCommands());
@@ -27,7 +28,26 @@ public final class RecordingIndicator extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        getServer().getMessenger().unregisterOutgoingPluginChannel(this);
+        getServer().getMessenger().unregisterIncomingPluginChannel(this);
         getServer().getConsoleSender().sendMessage(ChatColor.RED + "[Recording Indicator] Plugin disabled!");
+    }
+
+    @Override
+    public void onPluginMessageReceived(String channel, Player player, byte[] message) {
+        if (!channel.equals("acronicalrecordingindicator")) {
+            return;
+        }
+        if (message.length == 1) {
+            if (Arrays.equals(message, "auth".getBytes())) {
+                getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[Recording Indicator] Successfully authenticated with client-side mod");
+                player.sendPluginMessage(this, "acronicalrecordingindicator", "success".getBytes());
+            } else {
+                getServer().getConsoleSender().sendMessage(ChatColor.RED + "[Recording Indicator] Failed to authenticate with client-side mod");
+                player.sendPluginMessage(this, "acronicalrecordingindicator", "failure".getBytes());
+            }
+        }
+        PluginEvents.onModConnectPlugin(player, message);
     }
 
     private void versionCheck() {
