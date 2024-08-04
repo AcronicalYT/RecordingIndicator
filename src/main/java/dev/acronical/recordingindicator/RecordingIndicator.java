@@ -13,7 +13,10 @@ public final class RecordingIndicator extends JavaPlugin {
     @Override
     public void onEnable() {
         versionCheck();
-        getServer().getMessenger().registerIncomingPluginChannel(this, "acronicalRecordingIndicator");
+        getServer().getMessenger().registerIncomingPluginChannel(this, "acronicalRecordingIndicator", (channel, player, data) -> {
+            if (!channel.equals("acronicalRecordingIndicator")) return;
+            PluginEvents.onModConnectPlugin(player, data);
+        });
         getServer().getPluginManager().registerEvents(new PluginEvents(), this);
         getCommand("recording").setExecutor(new PluginCommands());
         getCommand("recording").setTabCompleter(new PluginCommands());

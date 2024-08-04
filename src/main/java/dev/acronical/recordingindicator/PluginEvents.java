@@ -1,5 +1,6 @@
 package dev.acronical.recordingindicator;
 
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -9,7 +10,6 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.io.File;
-import java.util.Objects;
 import java.util.UUID;
 
 public class PluginEvents implements Listener {
@@ -50,10 +50,11 @@ public class PluginEvents implements Listener {
         }
     }
 
-    public static void onPluginMessageRecieved(String channel, String playerName, String indicator, Boolean enabled) {
-        if (!channel.equals("acronicalRecordingIndicator")) return;
-
-        Player player = Bukkit.getServer().getOnlinePlayers().getName().equals(playerName);
+    public static void onModConnectPlugin(Player player, byte[] data) {
+        String dataString = new String(data);
+        String[] dataSplit = dataString.split(";;");
+        String indicator = dataSplit[0];
+        boolean enabled = Boolean.parseBoolean(dataSplit[1]);
 
         switch (indicator) {
             case "live":
@@ -64,10 +65,9 @@ public class PluginEvents implements Listener {
                 if (enabled) player.performCommand("recording on");
                 if (!enabled) player.performCommand("recording off");
                 break;
-            case default:
-                player.sendMessage("An error occurred when automatically setting status, aborting...");
+            default:
+                player.sendMessage(ChatColor.RED + "An error occurred when automatically setting status, aborting...");
                 throw new Error("Data received with no indicator string, please contact Acronical about this.");
-                break;
         }
     }
 }
