@@ -49,4 +49,25 @@ public class PluginEvents implements Listener {
             player.setPlayerListName(player.getName());
         }
     }
+
+    public static void onPluginMessageRecieved(String channel, String playerName, String indicator, Boolean enabled) {
+        if (!channel.equals("acronicalRecordingIndicator")) return;
+
+        Player player = Bukkit.getServer().getOnlinePlayers().getName().equals(playerName);
+
+        switch (indicator) {
+            case "live":
+                if (enabled) player.performCommand("live on");
+                if (!enabled) player.performCommand("live off");
+                break;
+            case "recording":
+                if (enabled) player.performCommand("recording on");
+                if (!enabled) player.performCommand("recording off");
+                break;
+            case default:
+                player.sendMessage("An error occurred when automatically setting status, aborting...");
+                throw new Error("Data received with no indicator string, please contact Acronical about this.");
+                break;
+        }
+    }
 }
