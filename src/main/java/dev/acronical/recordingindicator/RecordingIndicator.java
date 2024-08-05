@@ -35,6 +35,7 @@ public final class RecordingIndicator extends JavaPlugin implements PluginMessag
 
     @Override
     public void onPluginMessageReceived(String channel, Player player, byte[] message) {
+        getServer().getConsoleSender().sendMessage(ChatColor.BLUE + "[Recording Indicator] Recieved plugin message on channel " + channel + " from player " + player + " and with message: " + Arrays.toString(message));
         if (!channel.equals("acronicalrecordingindicator")) {
             return;
         }
